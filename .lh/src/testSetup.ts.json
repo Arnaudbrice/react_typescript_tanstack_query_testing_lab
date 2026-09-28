@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/testSetup.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1787166784482,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1787167481803,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,9 @@\n import { cleanup } from \"@testing-library/react\";\n import { resetProducts } from \"./mocks/handlers\";\n import { server } from \"./mocks/server\";\n \n+ // Establish API mocking before all tests.\n beforeAll(() => server.listen({ onUnhandledRequest: \"error\" }));\n \n afterEach(() => {\n   cleanup();\n@@ -12,5 +13,6 @@\n   server.resetHandlers();\n   resetProducts();\n });\n \n+// close the server when the test suite ends\n afterAll(() => server.close());\n"
+                }
+            ],
+            "date": 1787166784482,
+            "name": "Commit-0",
+            "content": "import \"@testing-library/jest-dom/vitest\";\nimport { afterAll, afterEach, beforeAll } from \"vitest\";\nimport { cleanup } from \"@testing-library/react\";\nimport { resetProducts } from \"./mocks/handlers\";\nimport { server } from \"./mocks/server\";\n\nbeforeAll(() => server.listen({ onUnhandledRequest: \"error\" }));\n\nafterEach(() => {\n  cleanup();\n  // entfernt die Handler, die während eines Tests mit server.use() hinzugefügt wurden. Danach gelten wieder die ursprünglichen Handler aus handlers.ts, die beim Serverstart übergeben wurden ( const server = setupServer(...handlers))\n  server.resetHandlers();\n  resetProducts();\n});\n\nafterAll(() => server.close());\n"
+        }
+    ]
+}

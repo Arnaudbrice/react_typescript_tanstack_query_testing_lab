@@ -1,0 +1,26 @@
+{
+    "sourceFile": "tests/ProductCache.test.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1788903105391,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1788903401743,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,10 @@\n import { describe, it } from \"vitest\";\n import { server } from \"../src/mocks/server\";\n import { http, HttpResponse } from \"msw\";\n import { initialProducts } from \"../src/mocks/handlers\";\n+import { renderWithProviders } from \"./renderWithProviders\";\n+import ProductList from \"../src/components/ProductList\";\n \n describe(\"product query cache\", () => {\n   // TICKET 2.10\n   it(\"keeps cached product data isolated between tests\", () => {\n@@ -11,8 +13,12 @@\n         const products = initialProducts;\n         return HttpResponse.json(products);\n       }),\n     );\n+\n+    renderWithProviders(<ProductList />);\n+\n+    expect(screen.getByRole(\"listitem\",{name:/Mechanical Keyboard/i})).toBeInTheDocument();\n   });\n \n   // BONUS 2.11\n   it.todo(\"prefetches products before ProductList mounts\");\n"
+                },
+                {
+                    "date": 1788903432634,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,9 @@\n import { http, HttpResponse } from \"msw\";\n import { initialProducts } from \"../src/mocks/handlers\";\n import { renderWithProviders } from \"./renderWithProviders\";\n import ProductList from \"../src/components/ProductList\";\n+import { screen } from \"@testing-library/react\";\n \n describe(\"product query cache\", () => {\n   // TICKET 2.10\n   it(\"keeps cached product data isolated between tests\", () => {\n"
+                }
+            ],
+            "date": 1788903105391,
+            "name": "Commit-0",
+            "content": "import { describe, it } from \"vitest\";\nimport { server } from \"../src/mocks/server\";\nimport { http, HttpResponse } from \"msw\";\nimport { initialProducts } from \"../src/mocks/handlers\";\n\ndescribe(\"product query cache\", () => {\n  // TICKET 2.10\n  it(\"keeps cached product data isolated between tests\",() => {\n\n    server.use(http.get(\"/api/products\",() => {\n      const products= initialProducts;\n      return HttpResponse.json(products)\n\n    }))\n\n\n  });\n\n  // BONUS 2.11\n  it.todo(\"prefetches products before ProductList mounts\");\n\n  // BONUS 2.12\n  it.todo(\"updates the products cache with setQueryData without a second GET request\");\n});\n"
+        }
+    ]
+}

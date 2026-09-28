@@ -1,0 +1,18 @@
+{
+    "sourceFile": "tests/smoke.test.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1788209267460,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1788209267460,
+            "name": "Commit-0",
+            "content": "import { screen } from \"@testing-library/react\";\nimport { describe, expect, it } from \"vitest\";\nimport ProductList from \"../src/components/ProductList\";\nimport { renderWithProviders } from \"./renderWithProviders\";\n\ndescribe(\"test setup\", () => {\n  it(\"renders the product list after the API responds\", async () => {\n    renderWithProviders(<ProductList />);\n\n    //if we don't redefine the msw handlers, their will be called before the renderWithProviders function is called per default\n\n    expect(await screen.findByText(\"Mechanical Keyboard\")).toBeInTheDocument();\n  });\n});\n"
+        }
+    ]
+}

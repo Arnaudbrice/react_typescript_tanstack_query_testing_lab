@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/hooks/useProducts.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1786985172882,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1786985221426,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,7 +10,7 @@\n export default function useProducts() {\n   return useQuery({\n     queryKey: productKeys.all,\n     queryFn: getProducts,\n-    staleTime: 30_000,\n+    staleTime: 30_000,// 30 seconds\n   });\n }\n"
+                },
+                {
+                    "date": 1786985229188,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,15 +2,15 @@\n import { getProducts } from \"../api/products\";\n \n export const productKeys = {\n   // mit as const\n-// readonly [\"products\"]\n+  // readonly [\"products\"]\n   all: [\"products\"] as const,\n };\n \n export default function useProducts() {\n   return useQuery({\n     queryKey: productKeys.all,\n     queryFn: getProducts,\n-    staleTime: 30_000,// 30 seconds\n+    staleTime: 30_000, // 30 seconds\n   });\n }\n"
+                }
+            ],
+            "date": 1786985172882,
+            "name": "Commit-0",
+            "content": "import { useQuery } from \"@tanstack/react-query\";\nimport { getProducts } from \"../api/products\";\n\nexport const productKeys = {\n  // mit as const\n// readonly [\"products\"]\n  all: [\"products\"] as const,\n};\n\nexport default function useProducts() {\n  return useQuery({\n    queryKey: productKeys.all,\n    queryFn: getProducts,\n    staleTime: 30_000,\n  });\n}\n"
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/hooks/useCreateProduct.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1787173084897,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1787173111810,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n   return useMutation({\n     mutationFn: createProduct,\n     onSuccess: () => {\n       void queryClient.invalidateQueries({\n-        //alte cache products Daten löschen\n+        //alte cache products Daten löschen und neue Produkten laden\n         queryKey: productKeys.all,\n       });\n     },\n   });\n"
+                },
+                {
+                    "date": 1789129100884,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,12 +7,18 @@\n \n   // wenn mutation.mutate({...product}) aufgerufen wird, wird createProduct({...product})aufgerufen\n   return useMutation({\n     mutationFn: createProduct,\n-    onSuccess: () => {\n+   /*  onSuccess: () => {\n       void queryClient.invalidateQueries({\n         //alte cache products Daten löschen und neue Produkten laden\n         queryKey: productKeys.all,\n       });\n+\n+    }, */\n+    onSuccess: (createdProduct) => {\n+      // query cache sofort mit neuen Daten aktualisieren\n+      void queryClient.setQueryData(productKeys.all, ([oldProducts])=>[...oldProducts,createProduct])\n+\n     },\n   });\n }\n"
+                }
+            ],
+            "date": 1787173084897,
+            "name": "Commit-0",
+            "content": "import { useMutation, useQueryClient } from \"@tanstack/react-query\";\nimport { createProduct } from \"../api/products\";\nimport { productKeys } from \"./useProducts\";\n\nexport default function useCreateProduct() {\n  const queryClient = useQueryClient();\n\n  // wenn mutation.mutate({...product}) aufgerufen wird, wird createProduct({...product})aufgerufen\n  return useMutation({\n    mutationFn: createProduct,\n    onSuccess: () => {\n      void queryClient.invalidateQueries({//alte cache products Daten löschen\n        queryKey: productKeys.all,\n      });\n    },\n  });\n}\n"
+        }
+    ]
+}

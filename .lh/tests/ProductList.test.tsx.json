@@ -1,0 +1,38 @@
+{
+    "sourceFile": "tests/ProductList.test.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1786985518468,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1786985569598,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,18 +2,14 @@\n import { renderWithProviders } from \"./renderWithProviders\";\n import ProductList from \"../src/components/ProductList\";\n \n describe(\"ProductList\", () => {\n-\n-  const renderComponent=()=>{\n+  const renderComponent = () => {\n     renderWithProviders(<ProductList />);\n-  }\n+  };\n   // TICKET 2.1\n-  it(\"shows the loading state while products are loading\",() => {\n+  it(\"shows the loading state while products are loading\", () => {});\n \n-\n-  });\n-\n   // TICKET 2.2\n   it.todo(\"renders products returned by the API\");\n \n   // TICKET 2.3\n"
+                },
+                {
+                    "date": 1786985846796,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,10 +6,14 @@\n   const renderComponent = () => {\n     renderWithProviders(<ProductList />);\n   };\n   // TICKET 2.1\n-  it(\"shows the loading state while products are loading\", () => {});\n+  it(\"shows the loading state while products are loading\", () => {\n+    renderComponent();\n+    expect(screen.getByRole(\"status\")).toHaveTextContent(\"Loading products...\");\n \n+  });\n+\n   // TICKET 2.2\n   it.todo(\"renders products returned by the API\");\n \n   // TICKET 2.3\n"
+                },
+                {
+                    "date": 1786985873569,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,8 @@\n import { describe, it } from \"vitest\";\n import { renderWithProviders } from \"./renderWithProviders\";\n import ProductList from \"../src/components/ProductList\";\n+import { screen } from \"@testing-library/react\";\n \n describe(\"ProductList\", () => {\n   const renderComponent = () => {\n     renderWithProviders(<ProductList />);\n"
+                },
+                {
+                    "date": 1786986115914,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,17 +1,23 @@\n import { describe, it } from \"vitest\";\n import { renderWithProviders } from \"./renderWithProviders\";\n import ProductList from \"../src/components/ProductList\";\n import { screen } from \"@testing-library/react\";\n+import { server } from \"../src/mocks/server\";\n+import { delay, http, HttpResponse } from \"msw\";\n \n describe(\"ProductList\", () => {\n   const renderComponent = () => {\n     renderWithProviders(<ProductList />);\n   };\n   // TICKET 2.1\n   it(\"shows the loading state while products are loading\", () => {\n     renderComponent();\n-    expect(screen.getByRole(\"status\")).toHaveTextContent(\"Loading products...\");\n+    server.use(http.get(\"/products\",async () => {\n+      await delay(100);\n+      return HttpResponse.json([])\n+    }\n+    ))\n   });\n \n   // TICKET 2.2\n   it.todo(\"renders products returned by the API\");\n"
+                },
+                {
+                    "date": 1786986127782,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,8 +17,9 @@\n         await delay(100);\n         return HttpResponse.json([]);\n       }),\n     );\n+    expect(screen.getByRole(\"status\")).toHaveTextContent(\"Loading products...\");\n   });\n \n   // TICKET 2.2\n   it.todo(\"renders products returned by the API\");\n"
+                }
+            ],
+            "date": 1786985518468,
+            "name": "Commit-0",
+            "content": "import { describe, it } from \"vitest\";\nimport { renderWithProviders } from \"./renderWithProviders\";\nimport ProductList from \"../src/components/ProductList\";\n\ndescribe(\"ProductList\", () => {\n\n  const renderComponent=()=>{\n    renderWithProviders(<ProductList />);\n  }\n  // TICKET 2.1\n  it(\"shows the loading state while products are loading\",() => {\n\n\n  });\n\n  // TICKET 2.2\n  it.todo(\"renders products returned by the API\");\n\n  // TICKET 2.3\n  it.todo(\"shows the empty state when the API returns no products\");\n\n  // TICKET 2.4\n  it.todo(\"shows an error when loading products fails\");\n\n  // TICKET 2.5\n  it.todo(\"handles multiple GET error status codes with a parameterized test\");\n});\n"
+        }
+    ]
+}

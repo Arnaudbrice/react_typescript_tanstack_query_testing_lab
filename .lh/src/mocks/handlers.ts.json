@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/mocks/handlers.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1788905605711,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1788906649182,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import { http, HttpResponse, delay } from \"msw\";\n import type { CreateProductInput, Product } from \"../types/product\";\n \n export const initialProducts: Product[] = [\n-  { id: 1, name: \"\", price: 129.99, category: \"Electronics\" },\n+  { id: 1, name: \"Mechanical Keyboard\", price: 129.99, category: \"Electronics\" },\n   { id: 2, name: \"TypeScript Handbook\", price: 39.9, category: \"Books\" },\n ];\n \n let products = [...initialProducts];\n"
+                }
+            ],
+            "date": 1788905605711,
+            "name": "Commit-0",
+            "content": "import { http, HttpResponse, delay } from \"msw\";\nimport type { CreateProductInput, Product } from \"../types/product\";\n\nexport const initialProducts: Product[] = [\n  { id: 1, name: \"\", price: 129.99, category: \"Electronics\" },\n  { id: 2, name: \"TypeScript Handbook\", price: 39.9, category: \"Books\" },\n];\n\nlet products = [...initialProducts];\n\nexport function resetProducts() {\n  products = [...initialProducts];\n}\n\nexport const handlers = [\n  http.get(\"/api/products\", async () => {\n    await delay(80);\n    return HttpResponse.json(products);\n  }),\n\n  http.post(\"/api/products\", async ({ request }) => {\n    await delay(80);\n    const input = (await request.json()) as CreateProductInput;\n\n    const product: Product = {\n      id: products.length + 1,\n      ...input,\n    };\n\n    products.push(product);\n    return HttpResponse.json(product, { status: 201 });\n  }),\n];\n"
+        }
+    ]
+}

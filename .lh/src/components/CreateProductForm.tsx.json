@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/components/CreateProductForm.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1787171711540,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1787171749265,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -57,10 +57,9 @@\n         Category\n         <select\n           name=\"category\"\n           value={category}\n-          onChange={(event) => setCategory(event.target.value)}\n-        >\n+          onChange={(event) => setCategory(event.target.value)}>\n           <option>Electronics</option>\n           <option>Books</option>\n           <option>Home</option>\n         </select>\n@@ -69,10 +68,8 @@\n       <button disabled={mutation.isPending}>\n         {mutation.isPending ? \"Saving...\" : \"Add product\"}\n       </button>\n \n-      {mutation.isError && (\n-        <p role=\"alert\">Product could not be saved.</p>\n-      )}\n+      {mutation.isError && <p role=\"alert\">Product could not be saved.</p>}\n     </form>\n   );\n }\n"
+                },
+                {
+                    "date": 1787171757266,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { useState, type FormEvent } from \"react\";\n+import { useState, type SubmitEvent } from \"react\";\n import useCreateProduct from \"../hooks/useCreateProduct\";\n \n export default function CreateProductForm() {\n   const [name, setName] = useState(\"\");\n"
+                },
+                {
+                    "date": 1787173301792,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,14 +10,16 @@\n   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {\n     event.preventDefault();\n \n     try {\n+      // call createProduct({name, price, category}) to create a product and update the cache(on sucess invalidating the cache)\n       await mutation.mutateAsync({\n         name,\n         price: Number(price),\n         category,\n       });\n \n+      // clear input fields\n       setName(\"\");\n       setPrice(\"\");\n     } catch {\n       // The mutation exposes the error through mutation.isError.\n"
+                },
+                {
+                    "date": 1787173695236,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -70,8 +70,9 @@\n       <button disabled={mutation.isPending}>\n         {mutation.isPending ? \"Saving...\" : \"Add product\"}\n       </button>\n \n+{/* mutation (post request) error handling */}\n       {mutation.isError && <p role=\"alert\">Product could not be saved.</p>}\n     </form>\n   );\n }\n"
+                },
+                {
+                    "date": 1787769919568,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,10 @@\n   const [price, setPrice] = useState(\"\");\n   const [category, setCategory] = useState(\"Electronics\");\n   const mutation = useCreateProduct();\n \n+  console.log(\"mutation\", mutation);\n+\n   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {\n     event.preventDefault();\n \n     try {\n"
+                }
+            ],
+            "date": 1787171711540,
+            "name": "Commit-0",
+            "content": "import { useState, type FormEvent } from \"react\";\nimport useCreateProduct from \"../hooks/useCreateProduct\";\n\nexport default function CreateProductForm() {\n  const [name, setName] = useState(\"\");\n  const [price, setPrice] = useState(\"\");\n  const [category, setCategory] = useState(\"Electronics\");\n  const mutation = useCreateProduct();\n\n  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {\n    event.preventDefault();\n\n    try {\n      await mutation.mutateAsync({\n        name,\n        price: Number(price),\n        category,\n      });\n\n      setName(\"\");\n      setPrice(\"\");\n    } catch {\n      // The mutation exposes the error through mutation.isError.\n      // Keeping the catch here prevents an unhandled rejected Promise\n      // from the form submit event.\n    }\n  }\n\n  return (\n    <form onSubmit={handleSubmit} aria-label=\"create product\">\n      <h2>Add product</h2>\n\n      <label>\n        Name\n        <input\n          name=\"name\"\n          value={name}\n          onChange={(event) => setName(event.target.value)}\n          required\n        />\n      </label>\n\n      <label>\n        Price\n        <input\n          name=\"price\"\n          type=\"number\"\n          min=\"0.01\"\n          step=\"0.01\"\n          value={price}\n          onChange={(event) => setPrice(event.target.value)}\n          required\n        />\n      </label>\n\n      <label>\n        Category\n        <select\n          name=\"category\"\n          value={category}\n          onChange={(event) => setCategory(event.target.value)}\n        >\n          <option>Electronics</option>\n          <option>Books</option>\n          <option>Home</option>\n        </select>\n      </label>\n\n      <button disabled={mutation.isPending}>\n        {mutation.isPending ? \"Saving...\" : \"Add product\"}\n      </button>\n\n      {mutation.isError && (\n        <p role=\"alert\">Product could not be saved.</p>\n      )}\n    </form>\n  );\n}\n"
+        }
+    ]
+}

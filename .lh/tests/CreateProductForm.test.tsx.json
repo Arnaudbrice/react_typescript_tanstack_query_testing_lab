@@ -1,0 +1,26 @@
+{
+    "sourceFile": "tests/CreateProductForm.test.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1787609443483,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1787609598470,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,10 +6,14 @@\n   const renderComponent = () => {\n     return renderWithProviders(<CreateProductForm />);\n   };\n   // TICKET 2.6\n-  it(\"submits a new product and clears the form after success\", async () => {});\n+  it(\"submits a new product and clears the form after success\", async () => {\n+    server.use(http.post(\"/api/products\",async() => {\n \n+    }))\n+  });\n+\n   // TICKET 2.7\n   it.todo(\"disables the submit button while the product is being saved\");\n \n   // TICKET 2.8\n"
+                },
+                {
+                    "date": 1787610131293,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,17 +1,35 @@\n import { describe, it } from \"vitest\";\n import CreateProductForm from \"../src/components/CreateProductForm\";\n import { renderWithProviders } from \"./renderWithProviders\";\n-import { http } from \"msw\";\n+import { http, HttpResponse } from \"msw\";\n import { server } from \"../src/mocks/server\";\n \n+type FillFormData={\n+  name:string;\n+  price:number;\n+  category:string;\n+  nameInput:HTMLInputElement;\n+  priceInput:HTMLInputElement;\n+  categoryInput:HTMLSelectElement;\n+  user:UserEvent\n+}\n+\n+function fillForm({name,price,category}:FillFormData){\n+\n+\n+}\n+\n+\n describe(\"CreateProductForm\", () => {\n   const renderComponent = () => {\n     return renderWithProviders(<CreateProductForm />);\n   };\n   // TICKET 2.6\n   it(\"submits a new product and clears the form after success\", async () => {\n-    server.use(http.post(\"/api/products\", async () => {}));\n+    server.use(http.post(\"/api/products\", async () => {\n+      HttpResponse.json()\n+    }));\n   });\n \n   // TICKET 2.7\n   it.todo(\"disables the submit button while the product is being saved\");\n"
+                }
+            ],
+            "date": 1787609443483,
+            "name": "Commit-0",
+            "content": "import { describe, it } from \"vitest\";\n\ndescribe(\"CreateProductForm\", () => {\n\n  const renderComponent=() => {\n     return renderWithProviders(<CreateProductForm />);\n  }\n  // TICKET 2.6\n  it(\"submits a new product and clears the form after success\",async() => {\n\n\n  });\n\n  // TICKET 2.7\n  it.todo(\"disables the submit button while the product is being saved\");\n\n  // TICKET 2.8\n  it.todo(\"shows an error and keeps the entered values when saving fails\");\n});\n"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "sourceFile": "package.json",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1787769448559,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1787769448559,
+            "name": "Commit-0",
+            "content": "{\n  \"name\": \"react-ts-query-testing-lab\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"tsc -b && vite build\",\n    \"preview\": \"vite preview\",\n    \"test\": \"vitest\",\n    \"test:ui\": \"vitest --ui\",\n    \"test:run\": \"vitest run\",\n    \"test:coverage\": \"vitest run --coverage\"\n  },\n  \"dependencies\": {\n    \"@tanstack/react-query\": \"^5.0.0\",\n    \"@tanstack/react-query-devtools\": \"^5.101.4\",\n    \"react\": \"^19.0.0\",\n    \"react-dom\": \"^19.0.0\"\n  },\n  \"devDependencies\": {\n    \"@eslint/js\": \"^9.0.0\",\n    \"@testing-library/jest-dom\": \"^6.0.0\",\n    \"@testing-library/react\": \"^16.0.0\",\n    \"@testing-library/user-event\": \"^14.0.0\",\n    \"@types/react\": \"^19.0.0\",\n    \"@types/react-dom\": \"^19.0.0\",\n    \"@vitejs/plugin-react\": \"latest\",\n    \"eslint\": \"^9.0.0\",\n    \"eslint-plugin-react-hooks\": \"^5.0.0\",\n    \"eslint-plugin-react-refresh\": \"^0.4.0\",\n    \"globals\": \"^16.0.0\",\n    \"jsdom\": \"latest\",\n    \"msw\": \"^2.0.0\",\n    \"typescript\": \"^5.0.0\",\n    \"typescript-eslint\": \"^8.0.0\",\n    \"vite\": \"latest\",\n    \"vitest\": \"latest\"\n  }\n}\n"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/App.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1786982290959,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1786983126227,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,23 +1,27 @@\n+import { ReactQueryDevtools } from \"@tanstack/react-query-devtools\";\n import CreateProductForm from \"./components/CreateProductForm\";\n import ProductList from \"./components/ProductList\";\n import \"./styles.css\";\n \n export default function App() {\n   return (\n-    <main className=\"app-shell\">\n-      <header>\n-        <p className=\"eyebrow\">Professional Testing Lab</p>\n-        <h1>Northstar Inventory</h1>\n-        <p>\n-          Practice React, TypeScript, TanStack Query, MSW and Vitest on a\n-          realistic feature.\n-        </p>\n-      </header>\n+    <>\n+      <main className=\"app-shell\">\n+        <header>\n+          <p className=\"eyebrow\">Professional Testing Lab</p>\n+          <h1>Northstar Inventory</h1>\n+          <p>\n+            Practice React, TypeScript, TanStack Query, MSW and Vitest on a\n+            realistic feature.\n+          </p>\n+        </header>\n+        <div className=\"grid\">\n+          <CreateProductForm />\n+          <ProductList />\n+        </div>\n+      </main>\n \n-      <div className=\"grid\">\n-        <CreateProductForm />\n-        <ProductList />\n-      </div>\n-    </main>\n+      <ReactQueryDevtools initialIsOpen={false}  />\n+    </>\n   );\n }\n"
+                }
+            ],
+            "date": 1786982290959,
+            "name": "Commit-0",
+            "content": "import CreateProductForm from \"./components/CreateProductForm\";\nimport ProductList from \"./components/ProductList\";\nimport \"./styles.css\";\n\nexport default function App() {\n  return (\n    <main className=\"app-shell\">\n      <header>\n        <p className=\"eyebrow\">Professional Testing Lab</p>\n        <h1>Northstar Inventory</h1>\n        <p>\n          Practice React, TypeScript, TanStack Query, MSW and Vitest on a\n          realistic feature.\n        </p>\n      </header>\n\n      <div className=\"grid\">\n        <CreateProductForm />\n        <ProductList />\n      </div>\n    </main>\n  );\n}\n"
+        }
+    ]
+}

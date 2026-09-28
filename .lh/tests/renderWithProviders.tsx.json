@@ -1,0 +1,26 @@
+{
+    "sourceFile": "tests/renderWithProviders.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1786985550967,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1788907426320,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,8 +5,9 @@\n \n export function renderWithProviders(\n   ui: ReactElement, //for example a component\n   options?: Omit<RenderOptions, \"wrapper\">,\n+  queryClient=createQueryClient(),\n ) {\n   const queryClient = createQueryClient();\n \n   function Wrapper({ children }: { children: ReactNode }) {\n"
+                },
+                {
+                    "date": 1788907455964,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,8 @@\n \n export function renderWithProviders(\n   ui: ReactElement, //for example a component\n   options?: Omit<RenderOptions, \"wrapper\">,\n-  queryClient = createQueryClient(),\n ) {\n   const queryClient = createQueryClient();\n \n   function Wrapper({ children }: { children: ReactNode }) {\n"
+                }
+            ],
+            "date": 1786985550967,
+            "name": "Commit-0",
+            "content": "import { QueryClientProvider } from \"@tanstack/react-query\";\nimport { render, type RenderOptions } from \"@testing-library/react\";\nimport type { ReactElement, ReactNode } from \"react\";\nimport { createQueryClient } from \"../src/lib/queryClient\";\n\nexport function renderWithProviders(\n  ui: ReactElement,//for example a component\n  options?: Omit<RenderOptions, \"wrapper\">,\n) {\n  const queryClient = createQueryClient();\n\n  function Wrapper({ children }: { children: ReactNode }) {\n    return (\n      <QueryClientProvider client={queryClient}>\n        {children}\n      </QueryClientProvider>\n    );\n  }\n\n  return {\n    queryClient,\n    ...render(ui, { wrapper: Wrapper, ...options }),\n  };\n}\n"
+        }
+    ]
+}

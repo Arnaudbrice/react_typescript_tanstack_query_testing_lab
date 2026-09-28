@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/api/products.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1787765630665,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1787765894734,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,10 @@\n \n   return response.json() as Promise<Product[]>;\n }\n \n+/* createProduct(input)        → Promise<Product> (Ergebnis in einer Promise gepackt)\n+await createProduct(input)  → Product-Objekt */\n export async function createProduct(\n   input: CreateProductInput,\n ): Promise<Product> {\n   const response = await fetch(API_URL, {\n"
+                },
+                {
+                    "date": 1787765913612,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,10 +11,10 @@\n \n   return response.json() as Promise<Product[]>;\n }\n \n-/* createProduct(input)        → Promise<Product> (Ergebnis in einer Promise gepackt)\n-await createProduct(input)  → Product-Objekt */\n+/* -createProduct(input) → Promise<Product> (Ergebnis in einer Promise gepackt)\n+-await createProduct(input)  → Product-Objekt */\n export async function createProduct(\n   input: CreateProductInput,\n ): Promise<Product> {\n   const response = await fetch(API_URL, {\n"
+                }
+            ],
+            "date": 1787765630665,
+            "name": "Commit-0",
+            "content": "import type { CreateProductInput, Product } from \"../types/product\";\n\nconst API_URL = \"/api/products\";\n\nexport async function getProducts(): Promise<Product[]> {\n  const response = await fetch(API_URL);\n\n  if (!response.ok) {\n    throw new Error(\"Failed to load products\");\n  }\n\n  return response.json() as Promise<Product[]>;\n}\n\nexport async function createProduct(input: CreateProductInput,): Promise<Product> {\n  const response = await fetch(API_URL, {\n    method: \"POST\",\n    headers: {\n      \"Content-Type\": \"application/json\",\n    },\n    body: JSON.stringify(input),\n  });\n\n  if (!response.ok) {\n    throw new Error(\"Failed to create product\");\n  }\n\n  return response.json() as Promise<Product>;\n}\n"
+        }
+    ]
+}
