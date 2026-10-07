@@ -600,4 +600,216 @@ describe("product query cache", () => {
 
     expect(postRequestCount).toBe(2);
   });
+
+  // in-flight ≈ pending
+  it("prevents an in-flight products query from overwriting the optimistic update ", async () => {
+    const user = userEvent.setup();
+
+    let resolveSecondGetRequest!: () => void;
+    const secondGetRequestPromise = new Promise<void>((resolve) => {
+      resolveSecondGetRequest = resolve;
+    });
+
+    let getRequestCount = 0;
+    let secondGetCompleted = false;
+
+    const allProducts = [...initialProducts];
+
+    server.use(
+      http.get("/api/products", async () => {
+        getRequestCount++;
+        const products = [...allProducts];
+
+        if (getRequestCount === 1) {
+          return HttpResponse.json(products);
+        }
+
+        await secondGetRequestPromise;
+        secondGetCompleted = true;
+
+        return HttpResponse.json(products);
+      }),
+    );
+
+    let resolvePostRequest!: () => void;
+    const postRequestPromise = new Promise<void>((resolve) => {
+      resolvePostRequest = resolve;
+    });
+
+    server.use(
+      http.post("/api/products", async ({ request }) => {
+        const product = (await request.json()) as CreateProductInput;
+
+        const newProduct: Product = { id: 3, ...product };
+
+        await postRequestPromise;
+        allProducts.push(newProduct);
+        return HttpResponse.json(newProduct, { status: 201 });
+      }),
+    );
+
+    const { queryClient } = renderWithProviders(<App />);
+
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+    expect(await screen.findByText(/TypeScript Handbook/i)).toBeInTheDocument();
+
+    // Wir wollen nicht auf das Ende der Invalidierung warten, denn GET #2 soll ja gerade pending bleiben.
+    void queryClient.invalidateQueries({
+      queryKey: productKeys.all,
+    });
+
+    await waitFor(() => {
+      expect(getRequestCount).toBe(2);
+    });
+
+    const nameInput = screen.getByLabelText(/name/i);
+    const priceInput = screen.getByLabelText(/price/i);
+    const categoryInput = screen.getByRole("combobox", { name: /category/i });
+
+    let button = screen.getByRole("button", { name: /add product/i });
+
+    await user.type(nameInput, "tablet");
+    await user.type(priceInput, "100");
+    await user.selectOptions(categoryInput, "Electronics");
+    await user.click(button);
+
+    button = await screen.findByRole("button", { name: /saving/i });
+    expect(button).toBeDisabled();
+
+    expect(await screen.findByText(/tablet/i)).toBeInTheDocument();
+
+    resolveSecondGetRequest();
+    await waitFor(() => {
+      expect(secondGetCompleted).toBe(true);
+    });
+
+    expect(screen.getByText(/tablet/i)).toBeInTheDocument();
+
+    resolvePostRequest();
+
+    expect(
+      await screen.findByRole("button", { name: /add product/i }),
+    ).toBeEnabled();
+  });
+
+  it("keeps the form values when creating a product fails", async () => {
+    // userEvent
+
+    const user = userEvent.setup();
+
+    // POST → 500
+
+    server.use(
+      http.post("/api/products", () => {
+        // body
+
+        return HttpResponse.json({ message: "Server Error" }, { status: 500 });
+      }),
+    );
+
+    // render App
+
+    renderWithProviders(<App />);
+
+    // warten bis initiale Products geladen sind
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/TypeScript Handbook/i)).toBeInTheDocument();
+
+    // Inputs holen
+
+    const nameInput = screen.getByLabelText(/name/i);
+    const priceInput = screen.getByLabelText(/price/i);
+    const categoryInput = screen.getByRole("combobox", { name: /category/i });
+
+    // Name: tablet
+    // Price: 100
+    // Category: Electronics
+
+    await user.type(nameInput, "tablet");
+    await user.type(priceInput, "100");
+    await user.selectOptions(categoryInput, "Electronics");
+
+    // Add product klicken
+
+    let button = screen.getByRole("button", { name: /add product/i });
+
+    await user.click(button);
+
+    // NOCH KEINE Assertions zum Fehler
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /Product could not be saved/i,
+    );
+    expect(screen.getByLabelText(/name/i)).toHaveValue("tablet");
+    expect(screen.getByLabelText(/price/i)).toHaveValue(100);
+    expect(screen.getByRole("combobox")).toHaveValue("Electronics");
+
+    await waitFor(() => {
+      expect(screen.queryByText(/tablet/i)).not.toBeInTheDocument();
+    });
+  });
+
+  it("should update the cache with Changes from server after rollback of optimistic update", async () => {
+    const user = userEvent.setup();
+    let getRequestCount = 0;
+
+    server.use(
+      http.get("/api/products", () => {
+        // Counter erhöhen
+        getRequestCount++;
+
+        // GET #1:
+
+        if (getRequestCount === 1) {
+          return HttpResponse.json(initialProducts);
+        }
+        // initialProducts zurückgeben
+        // ab GET #2:
+        // serverProducts zurückgeben
+        return HttpResponse.json([
+          ...initialProducts,
+          {
+            id: 3,
+            name: "Monitor",
+            price: 100,
+            category: "Electronics",
+          },
+        ]);
+      }),
+    );
+
+    server.use(
+      http.post("/api/products", () => {
+        return HttpResponse.json(
+          {
+            message: "Server Error",
+          },
+          { status: 500 },
+        );
+      }),
+    );
+
+    renderWithProviders(<App />);
+
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+    expect(await screen.findByText(/TypeScript Handbook/i)).toBeInTheDocument();
+    expect(screen.queryByText(/monitor/i)).not.toBeInTheDocument();
+
+    const nameInput = screen.getByLabelText(/name/i);
+
+    const priceInput = screen.getByLabelText(/price/i);
+
+    const selectInput = screen.getByRole("combobox", { name: /category/i });
+    let button = screen.getByRole("button", { name: /add product/i });
+
+    await user.type(nameInput, "tablet");
+    await user.type(priceInput, "100");
+    await user.selectOptions(selectInput, "Electronics");
+
+    await user.click(button);
+
+    expect(await screen.findByText(/monitor/i)).toBeInTheDocument();
+    // monitor is displayed means getRequestCount is 2
+    expect(getRequestCount).toBe(2);
+    expect(screen.queryByText(/tablet/i)).not.toBeInTheDocument();
+  });
 });
