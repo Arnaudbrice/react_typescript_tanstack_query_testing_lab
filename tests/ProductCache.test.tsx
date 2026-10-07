@@ -813,4 +813,3 @@ describe("product query cache", () => {
     expect(screen.queryByText(/tablet/i)).not.toBeInTheDocument();
   });
 });
-});
