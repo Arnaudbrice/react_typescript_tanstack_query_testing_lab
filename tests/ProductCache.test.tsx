@@ -812,4 +812,29 @@ describe("product query cache", () => {
     expect(getRequestCount).toBe(2);
     expect(screen.queryByText(/tablet/i)).not.toBeInTheDocument();
   });
+
+  it("should fetch products once", async () => {
+    let getRequestCount = 0;
+
+    server.use(
+      http.get("/api/products", () => {
+        getRequestCount++;
+
+        return HttpResponse.json(initialProducts);
+      }),
+    );
+
+    const { queryClient, unmount } = renderWithProviders(<ProductList />);
+
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+    expect(getRequestCount).toBe(1);
+    unmount();
+
+    //! render ProductList again
+    renderWithProviders(<ProductList />, queryClient);
+
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+
+    expect(getRequestCount).toBe(1);
+  });
 });
