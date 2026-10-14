@@ -813,7 +813,9 @@ describe("product query cache", () => {
     expect(screen.queryByText(/tablet/i)).not.toBeInTheDocument();
   });
 
-  it("should fetch products once", async () => {
+  /* Ziel: Nachweisen, dass invalidateQueries() einen neuen GET-Request auslöst,
+   obwohl die Query durch staleTime: 30_000 noch frisch wäre. */
+  it("should refetch products once again after invalidating the cache", async () => {
     let getRequestCount = 0;
 
     server.use(
@@ -835,6 +837,54 @@ describe("product query cache", () => {
 
     expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
 
+    expect(getRequestCount).toBe(1);
+
+    // TODO 1: Query invalidieren
+    await queryClient.invalidateQueries({
+      queryKey: productKeys.all,
+    });
+
+    // TODO 2: Mit waitFor überprüfen,
+    // dass getRequestCount === 2
+
+    await waitFor(() => {
+      expect(getRequestCount).toBe(2);
+    });
+
+    // TODO 3: Prüfen, ob Mechanical Keyboard
+    // weiterhin angezeigt wird
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+  });
+
+  it("should update the UI after setQueryData without refetching", async () => {
+    let getRequestCount = 0;
+    server.use(
+      http.get("/api/products", () => {
+        getRequestCount++;
+        return HttpResponse.json(initialProducts);
+      }),
+    );
+    const newProduct: Product = {
+      id: 3,
+      name: "Gaming Mouse",
+      price: 59.99,
+      category: "Electronics",
+    };
+    const { queryClient } = renderWithProviders(<ProductList />);
+
+    expect(await screen.findByText(/Mechanical Keyboard/i)).toBeInTheDocument();
+    expect(await screen.findByText(/TypeScript Handbook/i)).toBeInTheDocument();
+    // no await waitFor hier, because the assertion above are fulfilled
+    expect(getRequestCount).toBe(1);
+
+    queryClient.setQueryData<Product[]>(productKeys.all, (oldProducts = []) => [
+      ...oldProducts,
+      newProduct,
+    ]);
+    expect(
+      await screen.findByText(new RegExp(newProduct.name)),
+    ).toBeInTheDocument();
+    // optimistic update is visible in the UI, so get has been called once
     expect(getRequestCount).toBe(1);
   });
 });
